@@ -3,10 +3,10 @@ package com.vinnorman.getitdone.ui.tasks
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.vinnorman.getitdone.data.Task
+import com.vinnorman.getitdone.data.model.Task
 import com.vinnorman.getitdone.databinding.ItemTaskBinding
 
 class TasksAdapter(private val listener: TaskUpdatedListener) :
@@ -38,6 +38,7 @@ class TasksAdapter(private val listener: TaskUpdatedListener) :
 
         fun bind(task: Task) {
             binding.apply {
+                textViewDetails.visibility = if (task.description.isNullOrEmpty()) View.GONE else View.VISIBLE
                 checkBox.isChecked = task.isComplete
                 toggleStar.isChecked = task.isStarred
                 if (task.isComplete) {

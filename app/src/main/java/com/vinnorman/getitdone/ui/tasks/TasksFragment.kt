@@ -5,18 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.vinnorman.getitdone.data.GetItDoneDatabase
-import com.vinnorman.getitdone.data.Task
-import com.vinnorman.getitdone.data.TaskDao
+import androidx.lifecycle.lifecycleScope
+import com.vinnorman.getitdone.data.model.Task
 import com.vinnorman.getitdone.databinding.FragmentTasksBinding
-import kotlin.concurrent.thread
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TasksFragment : Fragment(), TasksAdapter.TaskUpdatedListener {
 
     private lateinit var binding: FragmentTasksBinding
-    private val taskDao: TaskDao by lazy {
-        GetItDoneDatabase.getDatabase(requireContext()).getTaskDao()
-    }
+    private val viewModel: TasksViewModel by viewModel()
+
     private val adapter = TasksAdapter(this)
 
     override fun onCreateView(
@@ -35,19 +35,15 @@ class TasksFragment : Fragment(), TasksAdapter.TaskUpdatedListener {
     }
 
     fun fetchAllTasks() {
-        thread {
-            val tasks = taskDao.getAllTasks()
-            requireActivity().runOnUiThread {
-                adapter.setTasks(tasks)
+        lifecycleScope.launch {
+            viewModel.getTasks().collectLatest {
+                adapter.setTasks(it)
             }
         }
     }
 
     override fun onTaskUpdated(task: Task) {
-        thread {
-            taskDao.updateTask(task)
-            fetchAllTasks()
-        }
+        viewModel.updateTask(task)
     }
 
 }

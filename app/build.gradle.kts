@@ -60,8 +60,8 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
 
-
-
+    // Dependency Injection
+    implementation("io.insert-koin:koin-android:4.0.0")
 
 
     testImplementation("junit:junit:4.13.2")
