@@ -9,6 +9,10 @@ class TaskRepository(private val database: GetItDoneDatabase) {
         return database.getTaskDao().getAllTasks()
     }
 
+    fun getStarredTasks(): Flow<List<Task>> {
+        return database.getTaskDao().getStarredTasks()
+    }
+
     suspend fun addTask(task: Task) {
         database.getTaskDao().createTask(task)
     }

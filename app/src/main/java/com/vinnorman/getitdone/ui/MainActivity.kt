@@ -16,6 +16,7 @@ import com.vinnorman.getitdone.data.model.Task
 import com.vinnorman.getitdone.databinding.ActivityMainBinding
 import com.vinnorman.getitdone.databinding.DialogAddTaskBinding
 import com.vinnorman.getitdone.ui.components.TabButton
+import com.vinnorman.getitdone.ui.tasks.StarredTasksFragment
 import com.vinnorman.getitdone.ui.tasks.TasksFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -85,7 +86,10 @@ class MainActivity : AppCompatActivity() {
         override fun getItemCount() = 3
 
         override fun createFragment(position: Int): Fragment {
-            return TasksFragment()
+            return when (position) {
+                0 -> StarredTasksFragment()
+                 else -> TasksFragment()
+            }
         }
 
     }

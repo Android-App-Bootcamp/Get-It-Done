@@ -1,4 +1,4 @@
-package com.vinnorman.getitdone.ui
+package com.vinnorman.getitdone.ui.tasks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,11 +6,13 @@ import com.vinnorman.getitdone.data.TaskRepository
 import com.vinnorman.getitdone.data.model.Task
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: TaskRepository) : ViewModel() {
+class StarredTasksViewModel(private val repository: TaskRepository) : ViewModel() {
 
-    fun createTask(task: Task) {
+    val starredTasks = repository.getStarredTasks()
+
+    fun updateTask(task: Task) {
         viewModelScope.launch {
-            repository.addTask(task)
+            repository.updateTask(task)
         }
     }
 
