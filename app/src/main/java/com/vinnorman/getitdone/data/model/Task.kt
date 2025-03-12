@@ -1,4 +1,4 @@
-package com.vinnorman.getitdone.data
+package com.vinnorman.getitdone.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

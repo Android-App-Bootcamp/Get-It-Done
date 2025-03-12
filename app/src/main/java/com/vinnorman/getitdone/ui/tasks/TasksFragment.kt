@@ -1,22 +1,21 @@
 package com.vinnorman.getitdone.ui.tasks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.vinnorman.getitdone.data.GetItDoneDatabase
-import com.vinnorman.getitdone.data.Task
-import com.vinnorman.getitdone.data.TaskDao
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.vinnorman.getitdone.data.model.Task
 import com.vinnorman.getitdone.databinding.FragmentTasksBinding
-import kotlin.concurrent.thread
+import kotlinx.coroutines.launch
 
-class TasksFragment : Fragment(), TasksAdapter.TaskUpdatedListener {
+class TasksFragment : Fragment(), TasksAdapter.TaskItemClickListener {
 
+    private val viewModel: TasksViewModel by viewModels()
     private lateinit var binding: FragmentTasksBinding
-    private val taskDao: TaskDao by lazy {
-        GetItDoneDatabase.getDatabase(requireContext()).getTaskDao()
-    }
     private val adapter = TasksAdapter(this)
 
     override fun onCreateView(
@@ -35,19 +34,23 @@ class TasksFragment : Fragment(), TasksAdapter.TaskUpdatedListener {
     }
 
     fun fetchAllTasks() {
-        thread {
-            val tasks = taskDao.getAllTasks()
-            requireActivity().runOnUiThread {
-                adapter.setTasks(tasks)
-            }
+        lifecycleScope.launch {
+            val tasks: List<Task> = viewModel.fetchTasks()
+            Log.d("Vin", "Tasks Fetched")
+            adapter.setTasks(tasks)
         }
     }
 
     override fun onTaskUpdated(task: Task) {
-        thread {
-            taskDao.updateTask(task)
+        viewModel.updateTask(task) {
             fetchAllTasks()
         }
+
+    }
+
+    override fun onTaskDeleted(task: Task) {
+        viewModel.deleteTask(task)
+        fetchAllTasks()
     }
 
 }

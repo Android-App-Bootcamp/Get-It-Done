@@ -1,9 +1,10 @@
-package com.vinnorman.getitdone.data
+package com.vinnorman.getitdone.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.vinnorman.getitdone.data.model.Task
 
 @Database(entities = [Task::class], version = 2)
 abstract class GetItDoneDatabase : RoomDatabase() {

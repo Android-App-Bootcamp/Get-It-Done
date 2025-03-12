@@ -3,13 +3,13 @@ package com.vinnorman.getitdone.ui.tasks
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.vinnorman.getitdone.data.Task
+import com.vinnorman.getitdone.data.model.Task
 import com.vinnorman.getitdone.databinding.ItemTaskBinding
 
-class TasksAdapter(private val listener: TaskUpdatedListener) :
+class TasksAdapter(private val listener: TaskItemClickListener) :
     RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
 
     private var tasks: List<Task> = listOf()
@@ -38,6 +38,10 @@ class TasksAdapter(private val listener: TaskUpdatedListener) :
 
         fun bind(task: Task) {
             binding.apply {
+                root.setOnLongClickListener {
+                    listener.onTaskDeleted(task)
+                    true
+                }
                 checkBox.isChecked = task.isComplete
                 toggleStar.isChecked = task.isStarred
                 if (task.isComplete) {
@@ -48,7 +52,12 @@ class TasksAdapter(private val listener: TaskUpdatedListener) :
                     textViewDetails.paintFlags = 0
                 }
                 textViewTitle.text = task.title
-                textViewDetails.text = task.description
+                if (task.description.isNullOrEmpty()) {
+                    textViewDetails.visibility = View.GONE
+                } else {
+                    textViewDetails.text = task.description
+                    textViewDetails.visibility = View.VISIBLE
+                }
                 checkBox.setOnClickListener {
                     val updatedTask = task.copy(isComplete = checkBox.isChecked)
                     listener.onTaskUpdated(updatedTask)
@@ -61,9 +70,11 @@ class TasksAdapter(private val listener: TaskUpdatedListener) :
         }
     }
 
-    interface TaskUpdatedListener {
+    interface TaskItemClickListener {
 
         fun onTaskUpdated(task: Task)
+
+        fun onTaskDeleted(task: Task)
 
     }
 
