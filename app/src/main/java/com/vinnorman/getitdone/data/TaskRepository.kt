@@ -2,6 +2,7 @@ package com.vinnorman.getitdone.data
 
 import com.vinnorman.getitdone.data.database.TaskDao
 import com.vinnorman.getitdone.data.model.Task
+import kotlinx.coroutines.flow.Flow
 
 class TaskRepository(private val taskDao: TaskDao) {
 
@@ -9,7 +10,7 @@ class TaskRepository(private val taskDao: TaskDao) {
         taskDao.createTask(task)
     }
 
-    suspend fun getTasks(): List<Task> {
+    fun getTasks(): Flow<List<Task>> {
         return taskDao.getAllTasks()
     }
 
